@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="google-signin-client_id" content="418241076931-qr7sktlbnup6tb95f6u497vipd4bdhle.apps.googleusercontent.com">
+    <title>Register or Login</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="index.js"></script>
+</head>
+<body>
+    {{insertMe}}
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+        verify(profile.getEmail(), profile.getName());
+
+    }
+    function verify(email, name){
+        var regExp = new RegExp("[a-z0-9\.-_]*@iiitl\.ac.in$", "i");
+        match = email.match(regExp);
+        if(match) sendEmail(email);
+        else alert("not in this domain");
+    }
+
+    function sendEmail(email){
+        alert("hai");
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200){
+                body.html == this.responseText;
+            }
+        };
+        alert("hsi");
+        xmlHttp.open("GET", "localhost:8000?email="+email);
+        xmlHttp.send();
+    }
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+        console.log('User signed out.');
+        });
+    }
+    </script>
+</body>
+</html>
