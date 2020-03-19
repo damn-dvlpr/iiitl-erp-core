@@ -32,15 +32,16 @@
 
     function sendEmail(email){
         alert("hai");
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if(this.readyState == 4 && this.status == 200){
-                body.html == this.responseText;
-            }
-        };
-        alert("hsi");
-        xmlHttp.open("GET", "localhost:8000?email="+email);
-        xmlHttp.send();
+        location.replace("dashboard.html")
+//         xmlHttp = new XMLHttpRequest();
+//         xmlHttp.onreadystatechange = function() {
+//             if(this.readyState == 4 && this.status == 200){
+//                 body.html == this.responseText;
+//             }
+//         };
+//         alert("hsi");
+//         xmlHttp.open("GET", "localhost:8000?email="+email);
+//         xmlHttp.send();
     }
     function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();
