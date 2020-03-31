@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Employee,EmployeeBioData,EmployeeBank_Salary_Details,EmployeeAcademic_Details,EmployeeResearch_Details,EmployeeProfession_Details
+from .models import User,Employee_bio_data,Employee_bank_details,Employee_academic_details,Employee_research_details,Employee_profession_details
 # Register your models here.
 
-admin.site.register(Employee)
-admin.site.register(EmployeeBioData)
-admin.site.register(EmployeeBank_Salary_Details)
-admin.site.register(EmployeeAcademic_Details)
-admin.site.register(EmployeeResearch_Details)
-admin.site.register(EmployeeProfession_Details)
+admin.site.register(User)
+admin.site.register(Employee_bio_data)
+admin.site.register(Employee_bank_details)
+admin.site.register(Employee_academic_details)
+admin.site.register(Employee_research_details)
+admin.site.register(Employee_profession_details)

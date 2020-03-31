@@ -1,7 +1,16 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
+
+# validators
+phoneNumValidator =RegexValidator(
+                regex='^\d{10}$',
+                message='Entered phone Number does not have 10 digits.',
+            )
 
 
+# choices
 department_choices = (
     ('Finance', 'Finance'),
     ('Academics', 'Academics')
@@ -36,26 +45,35 @@ phy_choices=(
 
 
 
-'''  Registered employee model Sahiti'''
-class Employee(models.Model):
-    empid = models.CharField(primary_key=True, max_length=100)
-    name=models.CharField(max_length=50)
-    email =models.EmailField(max_length=254)
-    phone=models.BigIntegerField()
-    dept = models.CharField(max_length=30, choices=department_choices)
-    emp_status= models.CharField(max_length=30, choices=status_choices)
-    supervisor=models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True)
-    gender = models.CharField(max_length=30,choices=gender_choices)
+'''  Base User '''
+class User(AbstractUser):
     profile_status=models.CharField(max_length=50, choices=verification_choices)
-    post=models.CharField(max_length=50)
+    role = models.CharField(max_length=30, choices =[
+                                        ('student','student'),
+                                        ('employee', 'employee'),
+                            ]
+    )
+    manager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
 
     def __str__(self):
         return self.name
+    
+    def is_student(self):
+        return self.role == 'student'
 
-'''Employee  BioData model of the employee Sahiti'''
-class EmployeeBioData(models.Model):
-    emp = models.OneToOneField(Employee,on_delete = models.CASCADE,primary_key = True)
+    def is_employee(self):
+        return self.role == 'employee'
+
+'''Employee  BioData model of the employee '''
+class Employee_bio_data(models.Model):
+    empid = models.CharField(primary_key=True, max_length=100)
+    dept = models.CharField(max_length=30, choices=department_choices)
+    emp_status= models.CharField(max_length=30, choices=status_choices)
+    gender = models.CharField(max_length=30,choices=gender_choices)
+    profile_status=models.CharField(max_length=50, choices=verification_choices)
+    post=models.CharField(max_length=50)
+    emp = models.ForeignKey(User,on_delete = models.CASCADE)
     dob = models.DateField()
     marital_status=models.CharField(max_length=30, choices=Maritalstatus_choices)
     nationality=models.CharField(max_length=30, choices=nationality_choices)
@@ -94,9 +112,9 @@ class EmployeeBioData(models.Model):
         return str(self.emp.name)
 
 
-''' Salary Details model of the employee Sahiti'''
-class EmployeeBank_Salary_Details(models.Model):
-    emp= models.OneToOneField(Employee,on_delete = models.CASCADE,primary_key = True,related_name='Professional_details')
+''' Salary Details model of the employee '''
+class Employee_bank_details(models.Model):
+    emp= models.ForeignKey(User,on_delete = models.CASCADE,related_name='Professional_details')
     acc_name=models.CharField(max_length=50)
     ifsc_code=models.CharField(max_length=11)
     acc_num=models.BigIntegerField()
@@ -105,9 +123,9 @@ class EmployeeBank_Salary_Details(models.Model):
         return str(self.emp.name)
 
 
-''' Employee Academic Details model  Sahiti'''
-class EmployeeAcademic_Details(models.Model):
-    emp = models.ForeignKey(Employee,on_delete=models.CASCADE,related_name='academic_detail')
+''' Employee Academic Details model  '''
+class Employee_academic_details(models.Model):
+    emp = models.ForeignKey(User,on_delete=models.CASCADE,related_name='academic_detail')
     degree = models.CharField(max_length=200)
     area_of_qualification = models.CharField(max_length=200)
     category_of_university = models.CharField(max_length=200)
@@ -127,9 +145,9 @@ class EmployeeAcademic_Details(models.Model):
     def __str__(self):
         return str(self.emp.name)
 
-''' Employee research Details model  Sahiti'''
-class EmployeeResearch_Details(models.Model):
-    emp = models.ForeignKey(Employee,
+''' Employee research Details model  '''
+class Employee_research_details(models.Model):
+    emp = models.ForeignKey(User,
                                   on_delete=models.CASCADE,
                                   related_name='teaching_and_research_detail',
                                   )
@@ -142,12 +160,12 @@ class EmployeeResearch_Details(models.Model):
         return str(self.emp.name)
 
 
-''' Employee  ProfessionDetails model  Sahiti'''
-class EmployeeProfession_Details(models.Model):
+''' Employee  ProfessionDetails model  '''
+class Employee_profession_details(models.Model):
     '''Model for professional details of applicant'''
-    emp = models.ForeignKey(Employee,
-                                on_delete=models.CASCADE,
-                                related_name='professional_detail',
+    emp = models.ForeignKey(User,
+                            on_delete=models.CASCADE,
+                            related_name='professional_detail',
                 )
     organisation = models.CharField(max_length=200)
     designation = models.CharField(max_length=200)
